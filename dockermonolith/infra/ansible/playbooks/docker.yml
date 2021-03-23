@@ -1,6 +1,6 @@
 ---
 - name: Install docker on host
-  hosts: app
+  hosts: all
   tasks:
     - name: Install deps
       become: true

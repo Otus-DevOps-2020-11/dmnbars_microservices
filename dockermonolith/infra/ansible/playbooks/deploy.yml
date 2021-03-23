@@ -1,6 +1,6 @@
 ---
 - name: Run docker container with app
-  hosts: app
+  hosts: all
   tasks:
     - name: Run docker container with app
       docker_container:
