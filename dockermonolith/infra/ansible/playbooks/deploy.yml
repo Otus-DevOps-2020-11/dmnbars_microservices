@@ -1,0 +1,13 @@
+---
+- name: Run docker container with app
+  hosts: app
+  tasks:
+    - name: Run docker container with app
+      docker_container:
+        name: reddit
+        image: "{{ reddit_image | default('dmnbars/otus-reddit:1.0') }}"
+        api_version: auto
+        restart_policy: always
+        restart: true
+        ports:
+          - 9292:9292
