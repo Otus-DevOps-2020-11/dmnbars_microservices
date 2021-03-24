@@ -20,4 +20,6 @@ docker run -d --network=reddit -e POST_SERVICE_HOST=second_post -e COMMENT_SERVI
 ```
 
 ### Второе задание со *
-Образы comment и ui минифицированы за счет использования alpine как базового образа
+Образы comment и ui минифицированы за счет использования alpine как базового образа:
+ * ui - 55.3MB
+ * comment - 52.5MB
