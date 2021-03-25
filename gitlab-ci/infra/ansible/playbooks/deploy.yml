@@ -28,5 +28,5 @@
             external_url 'http://{{ gitlab_external_ip }}'
         volumes:
           - "/home/ubuntu/gitlab/config:/etc/gitlab"
-          - '/home/ubuntu/gitlab/logs:/var/log/gitlab'
-          - '/home/ubuntu/gitlab/data:/var/opt/gitlab'
+          - "/home/ubuntu/gitlab/logs:/var/log/gitlab"
+          - "/home/ubuntu/gitlab/data:/var/opt/gitlab"

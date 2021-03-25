@@ -1,0 +1,35 @@
+---
+- name: Run gitlab runneer
+  hosts: all
+  tasks:
+    - name: Make necessary dirs
+      file:
+        path: "/home/ubuntu/gitlab-runner/{{ item }}"
+        state: directory
+        recurse: yes
+      loop:
+        - config
+
+    - name: Run gitlab runner
+      docker_container:
+        name: gitlab-runner
+        image: gitlab/gitlab-runner:latest
+        api_version: auto
+        restart_policy: always
+        restart: true
+        volumes:
+          - "/srv/gitlab-runner/config:/etc/gitlab-runner"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+
+    - name: Config runner
+      shell: |
+        docker exec -it gitlab-runner gitlab-runner register \
+         --url http://{{ gitlab_external_ip }}/ \
+         --non-interactive \
+         --locked=false \
+         --name DockerRunner \
+         --executor docker \
+         --docker-image alpine:latest \
+         --registration-token {{ gitlab_runner_token }} \
+         --tag-list "linux,xenial,ubuntu,docker" \
+         --run-untagged
