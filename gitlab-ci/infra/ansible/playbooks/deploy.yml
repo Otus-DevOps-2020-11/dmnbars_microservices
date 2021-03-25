@@ -1,0 +1,32 @@
+---
+- name: Run docker container with gitlab-ci
+  hosts: all
+  tasks:
+    - name: Make necessary dirs
+      file:
+        path: "/home/ubuntu/gitlab/{{ item }}"
+        state: directory
+        recurse: yes
+      loop:
+        - config
+        - logs
+        - data
+
+    - name: Run docker container with gitlab-ci
+      docker_container:
+        name: gitlab-ci
+        image: gitlab/gitlab-ce:latest
+        api_version: auto
+        restart_policy: always
+        restart: true
+        ports:
+          - "80:80"
+          - "443:443"
+          - "2222:22"
+        env:
+          GITLAB_OMNIBUS_CONFIG: |
+            external_url 'http://{{ gitlab_external_ip }}'
+        volumes:
+          - "/home/ubuntu/gitlab/config:/etc/gitlab"
+          - '/home/ubuntu/gitlab/logs:/var/log/gitlab'
+          - '/home/ubuntu/gitlab/data:/var/opt/gitlab'
