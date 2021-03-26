@@ -40,3 +40,15 @@ docker run -d --network=reddit -e POST_SERVICE_HOST=second_post -e COMMENT_SERVI
  * Базовое имя проекта берется как название директории в которой был запущен docker-compose
  * Базовое имя проекта можно переопределить через env переменную `COMPOSE_PROJECT_NAME`
  * Базовое имя проекта можно переопределить при запуске, через опцию `-p`: `docker-compose -p up`
+
+## Homework Gitlab CI 1
+ * Написан конфиг terraform для создания VM для установки Gitlab CI
+ * Написан Ansible playbook для установки Docker на эту VM
+ * Создан проект в Gitlab
+ * Для него написан базовый .gitlab-ci.yml
+ * Написан Ansible playbook для запуска и регистрации gitlab runner'а
+ * В пайплайны добавлены тесты
+ * В пайплайны добавлено создание gtilab окружений (статических и динамических)
+ * Настроены ограничения на окружения по тегам
+ * Написан Ansible playbook для запуска Gitlab CI на этой VM
+ * Настроено оповещение в Slack (#aleksandr_borisov) из Gitlab
