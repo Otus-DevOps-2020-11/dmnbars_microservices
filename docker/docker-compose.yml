@@ -75,6 +75,15 @@ services:
     networks:
       - back_net
 
+  blackbox:
+    image: prom/blackbox-exporter:v0.18.0
+    volumes:
+      - ./blackbox.yaml:/config/blackbox.yaml
+    command: ["--config.file=/config/blackbox.yaml"]
+    networks:
+      - back_net
+      - front_net
+
 volumes:
   post_db:
   comment_db:
