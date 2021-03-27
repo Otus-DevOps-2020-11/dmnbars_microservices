@@ -43,7 +43,10 @@ push_mongodb_exporter:
 push_prometheus:
 	docker push dmnbars/prometheus
 
-push: push_comment push_post push_ui push_mongodb_exporter push_prometheus
+push_alertmanager:
+	docker push dmnbars/alertmanager
+
+push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager
 
 start_app:
 	cd docker && docker-compose up -d
