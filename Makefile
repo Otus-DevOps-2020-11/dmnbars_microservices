@@ -1,4 +1,4 @@
-.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus
+.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring
 
 default: build
 
@@ -35,3 +35,21 @@ push_prometheus:
 	docker push dmnbars/prometheus
 
 push: push_comment push_post push_ui push_mongodb_exporter push_prometheus
+
+start_app:
+	cd docker && docker-compose up -d
+
+restart_app:
+	cd docker && docker-compose restart
+
+down_app:
+	cd docker && docker-compose down
+
+start_monitoring:
+	cd docker && docker-compose -f docker-compose-monitoring.yml up -d
+
+restart_monitoring:
+	cd docker && docker-compose -f docker-compose-monitoring.yml restart
+
+down_monitoring:
+	cd docker && docker-compose -f docker-compose-monitoring.yml down

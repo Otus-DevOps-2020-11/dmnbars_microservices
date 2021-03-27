@@ -51,6 +51,18 @@ services:
       - docker_back_net
       - docker_front_net
 
+  cadvisor:
+    image: google/cadvisor:v0.29.0
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - '8080:8080'
+    networks:
+      - docker_back_net
+
 volumes:
   prometheus_data:
 
