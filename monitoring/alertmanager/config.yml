@@ -1,0 +1,10 @@
+global:
+  slack_api_url: 'https://hooks.slack.com/services/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'
+
+route:
+  receiver: 'slack-notifications'
+
+receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+    - channel: '#aleksandr_borisov'
