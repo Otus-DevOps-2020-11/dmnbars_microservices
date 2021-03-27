@@ -7,27 +7,50 @@ services:
     networks:
       - back_net
 
+  comment_db:
+    image: mongo:${MONGO_VERSION}
+    volumes:
+      - comment_db:/data/db
+    networks:
+      - back_net
+
   ui:
-    image: ${USERNAME}/ui:${UI_VERSION}
+    image: ${USER_NAME}/ui:${UI_VERSION}
     ports:
       - "${UI_PORT}:9292/tcp"
     networks:
       - front_net
 
   post:
-    image: ${USERNAME}/post:${POST_VERSION}
+    image: ${USER_NAME}/post:${POST_VERSION}
     networks:
       - back_net
       - front_net
 
   comment:
-    image: ${USERNAME}/comment:${COMMENT_VERSION}
+    image: ${USER_NAME}/comment:${COMMENT_VERSION}
+    networks:
+      - back_net
+      - front_net
+
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
     networks:
       - back_net
       - front_net
 
 volumes:
   post_db:
+  comment_db:
+  prometheus_data:
 
 networks:
   back_net:
