@@ -41,8 +41,8 @@ networks:
   back_net:
     ipam:
       config:
-        - subnet: 10.0.2.0/24
+        - subnet: 10.0.4.0/24
   front_net:
     ipam:
       config:
-        - subnet: 10.0.1.0/24
+        - subnet: 10.0.3.0/24
