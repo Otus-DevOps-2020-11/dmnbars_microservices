@@ -61,6 +61,20 @@ services:
     networks:
       - back_net
 
+  mongodb-post-exporter:
+    image: ${USER_NAME}/mongodb_exporter:latest
+    environment:
+      MONGODB_URI: mongodb://post_db:27017
+    networks:
+      - back_net
+
+  mongodb-comment-exporter:
+    image: ${USER_NAME}/mongodb_exporter:latest
+    environment:
+      MONGODB_URI: mongodb://comment_db:27017
+    networks:
+      - back_net
+
 volumes:
   post_db:
   comment_db:
