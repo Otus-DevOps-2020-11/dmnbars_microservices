@@ -8,3 +8,11 @@ receivers:
   - name: 'slack-notifications'
     slack_configs:
     - channel: '#aleksandr_borisov'
+  - name: 'email-example-without-real-tokens'
+    email_configs:
+      - to: 'dmnbars@gmail.com'
+        from: 'dmnbars+alert@gmail.com'
+        smarthost: smtp.gmail.com:587
+        auth_username: "dmnbars@gmail.com"
+        auth_identity: "dmnbars@gmail.com"
+        auth_password: "auth_token"
