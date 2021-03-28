@@ -1,4 +1,4 @@
-.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring build_alertmanager
+.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring build_alertmanager build_telegraf push_telegraf
 
 default: build
 
@@ -26,7 +26,11 @@ build_alertmanager:
 	hadolint monitoring/alertmanager/Dockerfile
 	docker build -t $(USER_NAME)/alertmanager -f ./monitoring/alertmanager/Dockerfile ./monitoring/alertmanager
 
-build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager
+build_telegraf:
+	hadolint monitoring/telegraf/Dockerfile
+	docker build -t $(USER_NAME)/telegraf -f ./monitoring/telegraf/Dockerfile ./monitoring/telegraf
+
+build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf
 
 push_comment:
 	docker push dmnbars/comment
@@ -46,7 +50,10 @@ push_prometheus:
 push_alertmanager:
 	docker push dmnbars/alertmanager
 
-push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager
+push_telegraf:
+	docker push dmnbars/telegraf
+
+push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager push_telegraf
 
 start_app:
 	cd docker && docker-compose up -d
