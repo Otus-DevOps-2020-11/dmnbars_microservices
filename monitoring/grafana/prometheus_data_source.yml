@@ -6,3 +6,5 @@ datasources:
     access: proxy
     orgId: 1
     url: http://prometheus:9090
+    isDefault: true
+    uid: prom_datasource
