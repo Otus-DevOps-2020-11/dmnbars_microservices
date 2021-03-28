@@ -64,7 +64,7 @@ services:
       - docker_back_net
 
   grafana:
-    image: grafana/grafana:5.0.0
+    image: ${USER_NAME}/grafana
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
