@@ -1,4 +1,4 @@
-.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring build_alertmanager build_telegraf push_telegraf
+.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring build_alertmanager build_telegraf push_telegraf build_grafana push_grafana
 
 default: build
 
@@ -30,7 +30,11 @@ build_telegraf:
 	hadolint monitoring/telegraf/Dockerfile
 	docker build -t $(USER_NAME)/telegraf -f ./monitoring/telegraf/Dockerfile ./monitoring/telegraf
 
-build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf
+build_grafana:
+	hadolint monitoring/grafana/Dockerfile
+	docker build -t $(USER_NAME)/grafana -f ./monitoring/grafana/Dockerfile ./monitoring/grafana
+
+build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf build_grafana
 
 push_comment:
 	docker push dmnbars/comment
@@ -53,7 +57,10 @@ push_alertmanager:
 push_telegraf:
 	docker push dmnbars/telegraf
 
-push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager push_telegraf
+push_grafana:
+	docker push dmnbars/grafana
+
+push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager push_telegraf push_grafana
 
 start_app:
 	cd docker && docker-compose up -d
