@@ -1,7 +1,7 @@
 FROM alpine:3.6
 
 RUN apk --no-cache --update add ruby=2.4.6-r0 ruby-json=2.4.6-r0 ruby-dev=2.4.6-r0 build-base=0.5-r0 \
-    && gem install bundler:1.17.2 bson_ext:1.12.5 thrift:0.9.3.0 puma:3.12.0 -N \
+    && gem install bundler:1.17.2 bson_ext:1.12.5 thrift:0.9.3.0 puma:3.10.0 -N \
     && apk del build-base ruby-dev
 
 ENV APP_HOME /app

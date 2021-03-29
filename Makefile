@@ -1,5 +1,9 @@
 .PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring build_alertmanager build_telegraf push_telegraf build_grafana push_grafana
 
+COMMENT_VERSION ?= latest
+POST_VERSION ?= latest
+UI_VERSION ?= latest
+
 default: build
 
 build_comment:
@@ -37,13 +41,13 @@ build_grafana:
 build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf build_grafana
 
 push_comment:
-	docker push dmnbars/comment
+	docker push dmnbars/comment:$(COMMENT_VERSION)
 
 push_post:
-	docker push dmnbars/post
+	docker push dmnbars/post:$(POST_VERSION)
 
 push_ui:
-	docker push dmnbars/ui
+	docker push dmnbars/ui:$(UI_VERSION)
 
 push_mongodb_exporter:
 	docker push dmnbars/mongodb_exporter
