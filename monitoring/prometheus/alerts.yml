@@ -1,0 +1,20 @@
+groups:
+  - name: alert.rules
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute'
+          summary: 'Instance {{ $labels.instance }} down'
+
+      - alert: Slow responces on 95 percentile
+        expr: histogram_quantile(0.95, rate(ui_request_respone_time_bucker[1m])) > 0.02
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          description: '95 percentile request response time < 0.02'
+          summary: '95 percentile request response time < 0.02'

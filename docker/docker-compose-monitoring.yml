@@ -1,0 +1,106 @@
+version: '3.3'
+services:
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+    networks:
+      - docker_back_net
+      - docker_front_net
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - docker_back_net
+
+  mongodb-post-exporter:
+    image: ${USER_NAME}/mongodb_exporter:latest
+    environment:
+      MONGODB_URI: mongodb://post_db:27017
+    networks:
+      - docker_back_net
+
+  mongodb-comment-exporter:
+    image: ${USER_NAME}/mongodb_exporter:latest
+    environment:
+      MONGODB_URI: mongodb://comment_db:27017
+    networks:
+      - docker_back_net
+
+  blackbox:
+    image: prom/blackbox-exporter:v0.18.0
+    volumes:
+      - ./blackbox.yaml:/config/blackbox.yaml
+    command: [ "--config.file=/config/blackbox.yaml" ]
+    networks:
+      - docker_back_net
+      - docker_front_net
+
+  cadvisor:
+    image: google/cadvisor:v0.29.0
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - '8080:8080'
+    networks:
+      - docker_back_net
+
+  grafana:
+    image: ${USER_NAME}/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secret
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks:
+      - docker_back_net
+
+  alertmanager:
+    image: ${USER_NAME}/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    ports:
+      - 9093:9093
+    networks:
+      - docker_back_net
+
+  telegraf:
+    image: ${USER_NAME}/telegraf
+    ports:
+      - 9100:9100
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    networks:
+      - docker_back_net
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  docker_back_net:
+    external: true
+  docker_front_net:
+    external: true
