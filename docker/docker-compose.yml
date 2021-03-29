@@ -16,6 +16,8 @@ services:
 
   ui:
     image: ${USER_NAME}/ui:${UI_VERSION}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     ports:
       - "${UI_PORT}:9292/tcp"
     networks:
@@ -28,6 +30,8 @@ services:
 
   post:
     image: ${USER_NAME}/post:${POST_VERSION}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     networks:
       - back_net
       - front_net
@@ -39,6 +43,8 @@ services:
 
   comment:
     image: ${USER_NAME}/comment:${COMMENT_VERSION}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     networks:
       - back_net
       - front_net
