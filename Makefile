@@ -1,10 +1,13 @@
-.PHONY: default build build_comment build_post build_ui build_mongodb_exporter build_prometheus push push_comment push_post push_ui push_mongodb_exporter push_prometheus start_app restart_app down_app start_monitoring restart_monitoring down_monitoring build_alertmanager build_telegraf push_telegraf build_grafana push_grafana
-
 COMMENT_VERSION ?= latest
 POST_VERSION ?= latest
 UI_VERSION ?= latest
 
+.PHONY: default
 default: build
+
+.PHONY: build build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf push_telegraf build_grafana build_fluentd
+
+build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf build_grafana build_fluentd
 
 build_comment:
 	hadolint src/comment/Dockerfile
@@ -38,7 +41,13 @@ build_grafana:
 	hadolint monitoring/grafana/Dockerfile
 	docker build -t $(USER_NAME)/grafana -f ./monitoring/grafana/Dockerfile ./monitoring/grafana
 
-build: build_comment build_post build_ui build_mongodb_exporter build_prometheus build_alertmanager build_telegraf build_grafana
+build_fluentd:
+	hadolint logging/fluentd/Dockerfile
+	docker build -t $(USER_NAME)/fluentd -f ./logging/fluentd/Dockerfile ./logging/fluentd
+
+.PHONY: push push_comment push_post push_ui push_mongodb_exporter push_prometheus down_monitoring push_grafana push_fluentd
+
+push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager push_telegraf push_grafana push_fluentd
 
 push_comment:
 	docker push dmnbars/comment:$(COMMENT_VERSION)
@@ -64,7 +73,10 @@ push_telegraf:
 push_grafana:
 	docker push dmnbars/grafana
 
-push: push_comment push_post push_ui push_mongodb_exporter push_prometheus push_alertmanager push_telegraf push_grafana
+push_fluentd:
+	docker push dmnbars/fluentd
+
+.PHONY: start_app restart_app down_app start_monitoring restart_monitoring down_monitoring start_logging restart_logging down_logging
 
 start_app:
 	cd docker && docker-compose up -d
@@ -80,4 +92,12 @@ start_monitoring:
 restart_monitoring: down_monitoring start_monitoring
 
 down_monitoring:
+	cd docker && docker-compose -f docker-compose-monitoring.yml down
+
+start_logging:
+	cd docker && docker-compose -f docker-compose-logging.yml up -d
+
+restart_logging: down_logging start_logging
+
+down_logging:
 	cd docker && docker-compose -f docker-compose-monitoring.yml down
