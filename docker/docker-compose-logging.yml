@@ -21,6 +21,7 @@ services:
       - "9200:9200"
     networks:
       - docker_back_net
+      - docker_front_net
 
   kibana:
     image: kibana:7.4.0
