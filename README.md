@@ -52,3 +52,11 @@ docker run -d --network=reddit -e POST_SERVICE_HOST=second_post -e COMMENT_SERVI
  * Настроены ограничения на окружения по тегам
  * Написан Ansible playbook для запуска Gitlab CI на этой VM
  * Настроено оповещение в Slack (#aleksandr_borisov) из Gitlab
+
+## Homework Monitoring 1
+
+Docker hub:
+ - [ui](https://hub.docker.com/repository/docker/dmnbars/ui)
+ - [comment](https://hub.docker.com/repository/docker/dmnbars/comment)
+ - [post](https://hub.docker.com/repository/docker/dmnbars/post)
+ - [prometheus](https://hub.docker.com/repository/docker/dmnbars/prometheus)

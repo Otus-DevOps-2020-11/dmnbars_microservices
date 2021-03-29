@@ -1,7 +1,0 @@
-REPOSITORY                                                                                        TAG                                    IMAGE ID       CREATED          SIZE
-dmnbars/ubuntu-tmp-file                                                                           latest                                 e1a69151ba3c   24 seconds ago   63.3MB
-hello-world                                                                                       latest                                 d1165f221234   2 weeks ago      13.3kB
-ubuntu                                                                                            18.04                                  329ed837d508   2 weeks ago      63.3MB
-
-Чем отличается контейнер от образа
-docker container - это запущенный на основании (из) docker image контейнер/процесс

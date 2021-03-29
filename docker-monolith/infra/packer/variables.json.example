@@ -1,6 +1,0 @@
-{
-  "yc_folder_id": "folder13d223mxklmcff",
-  "yc_source_image_family": "ubuntu-1804-lts",
-  "yc_service_account_key_file": "packer/service_key.json.example",
-  "ssh_username": "ubuntu"
-}

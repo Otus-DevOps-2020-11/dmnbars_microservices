@@ -1,0 +1,21 @@
+{
+  "builders": [
+    {
+      "type": "yandex",
+      "service_account_key_file": "{{ user `yc_service_account_key_file` }}",
+      "folder_id": "{{ user `yc_folder_id`}}",
+      "source_image_family": "{{ user `yc_source_image_family` }}",
+      "image_name": "reddit-docker-base-{{timestamp}}",
+      "image_family": "reddit-app-base",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "platform_id": "standard-v1",
+      "use_ipv4_nat": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible/playbooks/docker.yml"
+    }
+  ]
+}
