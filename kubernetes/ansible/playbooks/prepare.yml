@@ -49,3 +49,52 @@
             - net.bridge.bridge-nf-call-iptables
             - net.ipv4.ip_forward
             - net.bridge.bridge-nf-call-ip6tables
+
+        - name: install GPG key
+          become: true
+          apt_key:
+            url: '{{ item.url }}'
+            keyring: '{{ item.keyring }}'
+            state: present
+          loop:
+            - {
+                keyring: '/etc/apt/trusted.gpg.d/libcontainers.gpg',
+                url: 'https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key'
+            }
+            - {
+              keyring: '/etc/apt/trusted.gpg.d/libcontainers-cri-o.gpg',
+              url: 'https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:1.19/xUbuntu_18.04/Release.key'
+            }
+
+        - name: add apt repositories
+          become: true
+          apt_repository:
+            repo: '{{ item.repo }}'
+            filename: '{{ item.filename }}'
+            state: present
+          loop:
+            - {
+                filename: '/etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list',
+                repo: 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /'
+            }
+            - {
+                filename: '/etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:1.19.list',
+                repo: 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.19/xUbuntu_18.04/ /'
+            }
+
+        - name: install runtime
+          become: true
+          apt:
+            update_cache: true
+            name: "{{ item }}"
+            state: present
+          loop:
+            - cri-o
+            - cri-o-runc
+
+        - name: restart services
+          become: true
+          systemd:
+            daemon-reload: true
+            name: crio
+            enabled: true
