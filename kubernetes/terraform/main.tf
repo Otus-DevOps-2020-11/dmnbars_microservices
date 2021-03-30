@@ -7,10 +7,10 @@ provider "yandex" {
 
 resource "yandex_compute_instance" "node" {
   count = var.instance_count
-  name  = "k8s-${count.index}"
+  name  = "k8s-node-${count.index + 1}"
 
   labels = {
-    tags = "k8s"
+    tags = "k8s-node"
   }
 
   resources {
@@ -32,6 +32,6 @@ resource "yandex_compute_instance" "node" {
   }
 
   metadata = {
-    ssh-keys = "yc-user:${file(var.public_key_path)}"
+    ssh-keys = "ubuntu:${file(var.public_key_path)}"
   }
 }

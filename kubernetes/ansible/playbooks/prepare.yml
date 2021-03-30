@@ -1,0 +1,7 @@
+---
+- name: Prepare nodes
+  hosts: all
+  tasks:
+    - debug:
+        msg: 'prepare'
+
