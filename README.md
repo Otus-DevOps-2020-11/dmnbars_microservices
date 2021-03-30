@@ -65,3 +65,15 @@ Docker hub:
 
 Docker hub:
  - [alertmanager](https://hub.docker.com/repository/docker/dmnbars/alertmanager)
+
+## Homework Logging 1
+ - Установлен `docker-machine-driver-yandex`
+ - В `docker-compose-logging.yml` добавлен EFK стек
+ - Настроена отдача логов через `fluentd` для `post` и `ui` сервиса
+ - Логи визуализированны в `kibana`
+ - Написан `json` логов для `service.post`
+ - Написан `grok` логов для `service.ui`
+ - Написан `grok` для второго формата логов в `service.ui`
+ - В `docker-compose-logging.yml` добавлен `zipkin`
+ - Настроена отправка трейсов из всех сервисов приложения в `zipkin`
+ - Найдена причина из-за которой страница конкретного поста грузилась медленно. В `zipkin` было видно, что `span` `db_find_single_post` выполнятеся ддолго (3 секунды). В коде был найден, где этот `span` и там была найдена строчка `time.sleep(3)`
