@@ -2,3 +2,4 @@
 - import_playbook: prepare.yml
 - import_playbook: install-docker-runtime.yml
 - import_playbook: install-bins.yml
+- import_playbook: init-cluster.yml

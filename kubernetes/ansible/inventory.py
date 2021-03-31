@@ -13,9 +13,13 @@ inventory = {
         "hostvars": {}
     },
     "all": {
-        "children": ["node"]
+        "children": ["node", "master"]
     },
     "node": {
+        "hosts": [],
+        "vars": {}
+    },
+    "master": {
         "hosts": []
     },
 }
@@ -26,6 +30,10 @@ for index, ip in enumerate(ips, start=1):
         "ansible_host": ip
     }
     inventory["node"]["hosts"].append(serverName)
+
+    if index == 1:
+        inventory["node"]["vars"]["master_node_ip"] = ip
+        inventory["master"]["hosts"].append(serverName)
 
 
 print(json.dumps(inventory, indent=4, sort_keys=True))

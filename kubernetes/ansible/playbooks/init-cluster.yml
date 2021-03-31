@@ -1,0 +1,71 @@
+---
+- name: start cluster
+  hosts: all
+  vars:
+    master_node_token: ""
+    master_node_ca_cert: ""
+  tasks:
+    - name: init cluster
+      block:
+        - name: get token
+          shell:
+            cmd: kubeadm token list | awk '{print $1}' | grep -vi token | head -n 1
+          register: kubeadm_token
+
+        - name: set master_node_token
+          set_fact:
+            master_node_token: "{{ kubeadm_token.stdout }}"
+          delegate_to: "{{ item }}"
+          delegate_facts: true
+          loop: "{{ play_hosts }}"
+
+        - name: kubeadm init
+          block:
+            - name: run kubeadm
+              become: true
+              shell: 'kubeadm init --apiserver-cert-extra-sans={{ master_node_ip }} --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint={{ master_node_ip }} --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all'
+
+            - name: get token
+              shell:
+                cmd: kubeadm token list | awk '{print $1}' | grep -vi token | head -n 1
+              register: kubeadm_token
+
+            - name: set master_node_token
+              set_fact:
+                master_node_token: "{{ kubeadm_token.stdout }}"
+              delegate_to: "{{ item }}"
+              delegate_facts: true
+              loop: "{{ play_hosts }}"
+          when: master_node_token == ""
+
+        - name: create config dir
+          file:
+            path: "/home/{{ ansible_env['USER'] }}/.kube"
+            state: directory
+
+        - name: copy config
+          become: true
+          copy:
+            remote_src: true
+            src: /etc/kubernetes/admin.conf
+            dest: "/home/{{ ansible_env['USER'] }}/.kube/config"
+            owner: "{{ ansible_env['USER'] }}"
+            group: "{{ ansible_env['USER'] }}"
+
+        - name: get ca_cert
+          shell:
+            cmd: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+          register: kubeadm_ca_cert
+
+        - name: set master_node_token
+          set_fact:
+            master_node_ca_cert: "{{ kubeadm_ca_cert.stdout }}"
+          delegate_to: "{{ item }}"
+          delegate_facts: true
+          loop: "{{ play_hosts }}"
+      when: '"master" in group_names'
+
+    - name: join worker nodes
+      become: true
+      shell:
+        cmd: 'kubeadm join {{ master_node_ip }}:6443 --token {{ master_node_token }} --discovery-token-ca-cert-hash sha256:{{ master_node_ca_cert }} --ignore-preflight-errors=all'
