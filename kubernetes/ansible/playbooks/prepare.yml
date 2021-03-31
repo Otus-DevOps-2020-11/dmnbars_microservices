@@ -26,7 +26,7 @@
     - name: install container runtime
       block:
         - name: load modules at bootup
-          become: true0
+          become: true
           copy:
             src: ../files/crio.conf
             dest: /etc/modules-load.d/crio.conf
@@ -98,3 +98,9 @@
             daemon-reload: true
             name: crio
             enabled: true
+
+        - name: conifg cri-o
+          become: true
+          copy:
+            src: ../files/02-cgroup-manager.conf
+            dest: /etc/crio/crio.conf.d/02-cgroup-manager.conf
