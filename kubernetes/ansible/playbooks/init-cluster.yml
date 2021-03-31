@@ -8,7 +8,7 @@
     - name: init cluster
       block:
         - name: get token
-          become: yes
+          become: true
           shell:
             cmd: kubeadm token list | awk '{print $1}' | grep -vi token | head -n 1
           register: kubeadm_token
@@ -27,7 +27,7 @@
               shell: 'kubeadm init --apiserver-cert-extra-sans={{ master_node_ip }} --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint={{ master_node_ip }} --pod-network-cidr=10.244.0.0/16 --node-name={{ inventory_hostname }} --ignore-preflight-errors=all'
 
             - name: get token
-              become: yes
+              become: true
               shell:
                 cmd: kubeadm token list | awk '{print $1}' | grep -vi token | head -n 1
               register: kubeadm_token_after_init
