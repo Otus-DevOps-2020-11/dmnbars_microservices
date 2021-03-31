@@ -8,6 +8,7 @@
     - name: init cluster
       block:
         - name: get token
+          become: yes
           shell:
             cmd: kubeadm token list | awk '{print $1}' | grep -vi token | head -n 1
           register: kubeadm_token
@@ -23,16 +24,20 @@
           block:
             - name: run kubeadm
               become: true
-              shell: 'kubeadm init --apiserver-cert-extra-sans={{ master_node_ip }} --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint={{ master_node_ip }} --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all'
+              shell: 'kubeadm init --apiserver-cert-extra-sans={{ master_node_ip }} --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint={{ master_node_ip }} --pod-network-cidr=10.244.0.0/16 --node-name={{ inventory_hostname }} --ignore-preflight-errors=all'
 
             - name: get token
+              become: yes
               shell:
                 cmd: kubeadm token list | awk '{print $1}' | grep -vi token | head -n 1
-              register: kubeadm_token
+              register: kubeadm_token_after_init
+              retries: 10
+              delay: 3
+              until: kubeadm_token_after_init.stdout != ""
 
             - name: set master_node_token
               set_fact:
-                master_node_token: "{{ kubeadm_token.stdout }}"
+                master_node_token: "{{ kubeadm_token_after_init.stdout }}"
               delegate_to: "{{ item }}"
               delegate_facts: true
               loop: "{{ play_hosts }}"
@@ -68,4 +73,16 @@
     - name: join worker nodes
       become: true
       shell:
-        cmd: 'kubeadm join {{ master_node_ip }}:6443 --token {{ master_node_token }} --discovery-token-ca-cert-hash sha256:{{ master_node_ca_cert }} --ignore-preflight-errors=all'
+        cmd: 'kubeadm join {{ master_node_ip }}:6443 --token {{ master_node_token }} --discovery-token-ca-cert-hash sha256:{{ master_node_ca_cert }} --node-name={{ inventory_hostname }} --ignore-preflight-errors=all'
+
+    - name: install calico
+      block:
+        - name: copy manifest
+          copy:
+            src: ../files/calico.yaml
+            dest: "/home/{{ ansible_env['USER'] }}/calico.yaml"
+
+        - name: apply manifest
+          shell:
+            cmd: "kubectl apply -f /home/{{ ansible_env['USER'] }}/calico.yaml"
+      when: '"master" in group_names'
