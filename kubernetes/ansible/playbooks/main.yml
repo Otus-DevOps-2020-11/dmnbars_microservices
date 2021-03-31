@@ -1,4 +1,4 @@
 ---
 - import_playbook: prepare.yml
-- import_playbook: install-runtime.yml
+- import_playbook: install-docker-runtime.yml
 - import_playbook: install-bins.yml
