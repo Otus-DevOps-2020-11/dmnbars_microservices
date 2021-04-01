@@ -1,0 +1,6 @@
+cloud_id         = "cloud_id"
+folder_id        = "folder_id"
+zone             = "ru-central1-a"
+public_key_path  = "~/.ssh/some_key.pub"
+network_id         = "network_id"
+service_account_id = "service_account_id"
