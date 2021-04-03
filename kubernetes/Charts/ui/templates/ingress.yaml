@@ -2,17 +2,16 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ui
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
   annotations:
-    kubernetes.io/ingress.allow-http: "false"
-  namespace: dev
+#    kubernetes.io/ingress.class: "nginx"
 spec:
   tls:
-  - secretName: ui-ingress
+  - secretName: {{ .Release.Name }}-{{ .Chart.Name }}
   rules:
   - http:
       paths:
       - path: /
         backend:
-          serviceName: ui
+          serviceName: {{ .Release.Name }}-{{ .Chart.Name }}
           servicePort: 9292
