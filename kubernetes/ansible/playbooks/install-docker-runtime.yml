@@ -1,0 +1,83 @@
+---
+- name: install container runtime
+  hosts: all
+  tasks:
+    - name: Install deps
+      become: true
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - python3
+        - python3-pip
+
+    - name: Install pip deps
+      become: true
+      pip:
+        name: "{{ item }}"
+      loop:
+        - docker-py
+
+    - name: install GPG key
+      become: true
+      apt_key:
+        url: "https://download.docker.com/linux/ubuntu/gpg"
+        state: present
+
+    - name: add apt repository
+      become: true
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+
+    - name: install docker
+      become: true
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - 'docker-ce=5:19.03.15~3-0~ubuntu-bionic'
+
+    - name: Fix docker permissions
+      block:
+        - name: Ensure group "docker" exists
+          group:
+            name: docker
+            state: present
+
+        - name: Add currenct user to docker group
+          become: true
+          user:
+            name: "{{ ansible_env['USER'] }}"
+            groups: docker
+            append: yes
+
+        - name: Fix docker permissions
+          become: true
+          file:
+            path: "{{ ansible_env['HOME'] }}/.docker"
+            recurse: true
+            owner: "{{ ansible_env['USER'] }}"
+            group: docker
+
+        - name: Reload connections for new groups
+          meta: reset_connection
+
+    - name: configure docker daemon
+      become: true
+      copy:
+        src: ../files/daemon.json
+        dest: /etc/docker/daemon.json
+
+    - name: restart docker daemon
+      become: true
+      systemd:
+        name: docker
+        daemon-reload: true
+        state: restarted
+        enabled: true

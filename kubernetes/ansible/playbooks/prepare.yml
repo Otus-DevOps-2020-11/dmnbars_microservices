@@ -1,0 +1,24 @@
+---
+- name: prepare nodes
+  hosts: all
+  tasks:
+    - name: disable swap
+      become: yes
+      shell: swapoff -a
+
+    - name: letting iptables see bridged traffic
+      block:
+        - name: load br_netfilter modules
+          become: true
+          modprobe:
+            name: br_netfilter
+            state: present
+
+        - name: configure iptables to see bridged traffic
+          become: true
+          sysctl:
+            name: '{{ item }}'
+            value: '1'
+          loop:
+            - net.bridge.bridge-nf-call-ip6tables
+            - net.bridge.bridge-nf-call-iptables

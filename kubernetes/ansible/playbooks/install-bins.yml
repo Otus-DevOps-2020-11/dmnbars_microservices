@@ -1,0 +1,43 @@
+---
+- name: install binaries
+  hosts: all
+  tasks:
+    - name: install deps
+      become: true
+      apt:
+        update_cache: true
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+
+    - name: install GPG key
+      become: true
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+        state: present
+
+    - name: add apt repositories
+      become: true
+      apt_repository:
+        repo: deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
+        filename: /etc/apt/sources.list.d/kubernetes.list
+        state: present
+
+    - name: install bins
+      become: true
+      apt:
+        update_cache: true
+        name: "{{ item }}"
+        state: present
+      loop:
+        - kubelet
+        - kubeadm
+        - kubectl
+
+    - name: pak mark
+      become: true
+      shell: apt-mark hold kubelet kubeadm kubectl
