@@ -22,6 +22,7 @@ resource "yandex_kubernetes_cluster" "cluster" {
   node_service_account_id = var.service_account_id
 
   release_channel = "RAPID"
+  network_policy_provider="CALICO"
 }
 
 resource "yandex_kubernetes_node_group" "node" {
