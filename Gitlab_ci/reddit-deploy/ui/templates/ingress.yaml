@@ -5,11 +5,11 @@ metadata:
   name: {{ template "ui.fullname" . }}
   annotations:
     kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
 spec:
-  tls:
-  - secretName: {{ template "ui.fullname" . }}
   rules:
-  - http:
+  - host: {{ .Values.ingress.host | default .Release.Name }}
+    http:
       paths:
       - path: /
         backend:
