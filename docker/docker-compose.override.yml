@@ -6,7 +6,7 @@ services:
 
 #  post:
 #    volumes:
-#      - ../src/post-py:/app
+#      - ../src/post:/app
 
   comment:
 #    volumes:
