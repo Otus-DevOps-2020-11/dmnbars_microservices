@@ -184,12 +184,12 @@ deploy:
     - apk add curl jq
   script:
     - >
-      PIPELINE_ID=`curl -Lk --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" -X POST http://$GITLAB_CI_HOST/api/v4/projects/1/pipeline\?ref\=main | jq '.id'`
+      PIPELINE_ID=`curl -Lk --header "PRIVATE-TOKEN: $API_TOKEN" -X POST http://$GITLAB_CI_HOST/api/v4/projects/1/pipeline\?ref\=main | jq '.id'`
     - echo $PIPELINE_ID
     - >
-      JOB_ID=`curl -Lk --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" http://$GITLAB_CI_HOST/api/v4/projects/1/pipelines/$PIPELINE_ID/jobs\?scope\[\]\=manual | jq '.[0].id'`
+      JOB_ID=`curl -Lk --header "PRIVATE-TOKEN: $API_TOKEN" http://$GITLAB_CI_HOST/api/v4/projects/1/pipelines/$PIPELINE_ID/jobs\?scope\[\]\=manual | jq '.[0].id'`
     - echo $JOB_ID
     - >
-      curl -Lk --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" -X POST http://$GITLAB_CI_HOST/api/v4/projects/1/jobs/$JOB_ID/play
+      curl -Lk --header "PRIVATE-TOKEN: $API_TOKEN" -X POST http://$GITLAB_CI_HOST/api/v4/projects/1/jobs/$JOB_ID/play
   only:
     - main
