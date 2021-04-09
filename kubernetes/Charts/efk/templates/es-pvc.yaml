@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: elasticsearch-logging-claim
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
 spec:
   storageClassName: yc-network-hdd
   accessModes:
@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 2Gi
-  volumeName: es-pv
+  volumeName: {{ .Release.Name }}-{{ .Chart.Name }}

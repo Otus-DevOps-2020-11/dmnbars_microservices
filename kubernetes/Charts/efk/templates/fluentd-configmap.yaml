@@ -372,3 +372,4 @@ metadata:
   name: fluentd-es-config-v0.1.1
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
+    release: { { .Release.Name } }
