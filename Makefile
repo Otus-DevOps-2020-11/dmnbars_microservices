@@ -14,8 +14,8 @@ build_comment:
 	cd src/comment && bash docker_build.sh
 
 build_post:
-	hadolint src/post-py/Dockerfile
-	cd src/post-py && bash docker_build.sh
+	hadolint src/post/Dockerfile
+	cd src/post && bash docker_build.sh
 
 build_ui:
 	hadolint src/ui/Dockerfile

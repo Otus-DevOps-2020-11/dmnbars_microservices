@@ -7,3 +7,5 @@
 *.retry
 variables.json
 .env
+__pycache__
+.git
