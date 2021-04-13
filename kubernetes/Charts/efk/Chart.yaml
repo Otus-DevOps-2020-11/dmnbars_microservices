@@ -1,0 +1,8 @@
+---
+name: efk
+version: 1.0.0
+description: efk stack
+maintainers:
+  - name: Someone
+    email: my@mail.com
+appVersion: 1.0
